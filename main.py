@@ -21,3 +21,14 @@ async def read_item(item_id: int):
 async def get_user(user: UserNames):
     print(user.value, user)
     return {"user": user}
+
+@app.get("/files/{file_path:path}")
+async def read_file(file_path: str):
+    return {"file_path": file_path}
+
+@app.get("/items/{item_id}")
+async def read_item(item_id: str, q: str | None = None):
+    if q:
+        return {"item": item_id, "q": q}
+    return {"item": item_id}
+    
