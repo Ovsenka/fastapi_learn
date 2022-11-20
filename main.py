@@ -1,11 +1,16 @@
 from enum import Enum
-
-from fastapi import FastAPI
+from pydantic import BaseModel
+from fastapi import FastAPI, Path, Query
 
 class UserNames(str, Enum):
     one = "John"
     two = "Max"
     three = "Jack" 
+
+class Item(BaseModel):
+    name: str
+    description: str = None
+    price: int = None
 
 app = FastAPI()
 
@@ -27,8 +32,12 @@ async def read_file(file_path: str):
     return {"file_path": file_path}
 
 @app.get("/items/{item_id}")
-async def read_item(item_id: str, q: str | None = None):
+async def read_item(
+    item_id: int = Path(title="The ID of the item", ge=1, le=1000), 
+    q: str | None = Query(default=...)):
+    results = {"item": item_id}
+    print
     if q:
-        return {"item": item_id, "q": q}
-    return {"item": item_id}
+        results.update({'q': q})
+    return results
     
